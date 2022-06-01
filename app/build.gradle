@@ -3,6 +3,11 @@ plugins {
 }
 
 android {
+    //开启viewBinding
+    buildFeatures {
+        viewBinding = true
+    }
+
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
@@ -13,15 +18,69 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
+        // All flavors must now belong to a named flavor dimension.
+        // Android Studio 3.0 之后 多渠道需要配置方向
+        flavorDimensions "default"
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        //调试 保留资源 传一个数组，发布时则要去掉
+        //resConfigs("zh","xxhdpi")
+
+        ndk {
+            //"armeabi", "x86","x86_64"
+            //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
+            //目前主流版本（Google Play上架要求app必须适配arm64-v8a）
+            //abiFilters "armeabi-v7a", "arm64-v8a"
         }
     }
+
+    //签名配置 要先出现，再可以引用
+    signingConfigs {
+        release {
+            keyAlias 'baseapp'
+            keyPassword 'android'
+            storeFile file('/src/main/jks/baseapp.jks')
+            storePassword 'swiftpass'
+        }
+    }
+
+    //打包配置
+    buildTypes {
+        release {
+            //shrinkResources为删除无用资源，minifyEnabled为混淆，删除无用代码，但两者是要配合起来用的
+            //只有当两者都为true的时候才会起到真正的删除无效代码和无引用资源的目的
+            //清理无用资源
+            shrinkResources false
+            //是否启动ZipAlign压缩
+            zipAlignEnabled true
+            //是否混淆
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            //签名
+            signingConfig signingConfigs.release
+        }
+    }
+
+    //渠道配置 All flavors must now belong to a named flavor dimension.
+//    productFlavors {
+//        xiaomi {
+//            manifestPlaceholders = [APP_CHANNEL_VALUE: "xiaomi"]
+//        }
+//        baidu {
+//            manifestPlaceholders = [APP_CHANNEL_VALUE: "baidu"]
+//        }
+//        wandoujia {
+//            manifestPlaceholders = [APP_CHANNEL_VALUE: "wandoujia"]
+//        }
+//        yingyongbao {
+//            manifestPlaceholders = [APP_CHANNEL_VALUE: "yingyongbao"]
+//        }
+//        //....
+//    }
+
+
+    //可以解决：java.lang.BootstrapMethodError: Exception from call site #8 bootstrap method
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
