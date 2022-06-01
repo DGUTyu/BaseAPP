@@ -3,25 +3,37 @@ plugins {
 }
 
 android {
-    compileSdkVersion 32
-    buildToolsVersion "32.0.0"
+    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
+    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
 
     defaultConfig {
-        minSdkVersion 23
-        targetSdkVersion 32
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.android["minSdkVersion"]
+        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
+        versionCode rootProject.ext.android["versionCode"]
+        versionName rootProject.ext.android["versionName"]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
 
+    //打包配置
     buildTypes {
+        debug {
+            //自定义Gradle常量
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            buildConfigField "String", "LOG_TAG", "\"BaseAPP\""
+            buildConfigField "String", "SP_NAME", "\"Config\""
+        }
         release {
+            //好处：可以区分debug和release
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            buildConfigField "String", "LOG_TAG", "\"BaseAPP\""
+            buildConfigField "String", "SP_NAME", "\"Config\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -29,10 +41,37 @@ android {
 }
 
 dependencies {
-
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.android.material:material:1.1.0'
+    implementation fileTree(dir: 'libs', includes: ['*.jar'])
+    /**
+     * bmob提供的Androidsdk必须要去掉重复依赖才能使用
+     * implementation指令:只能在内部使用此模块，
+     * 比如在一个libiary中使用implementation依赖了gson库，然后主项目依赖了libiary，
+     * 那么，我的主项目就无法访问gson库中的方法，这样的好处是编译速度会加快。
+     * 如果你需要提供给外部访问，那么就使用 api 依赖即可。
+     * 故implementation rootProject.ext.dependencies["appcompat"]改为api,app.gradle中的可以删除
+     */
+    //v7
+    api rootProject.ext.dependencies["appcompat"]
+    //
+    api rootProject.ext.dependencies["material"]
+    api rootProject.ext.dependencies["constraintlayout"]
+    //图片加载
+    api rootProject.ext.dependencies["glide"]
+    //EventBus
+    api rootProject.ext.dependencies["eventbus"]
+    //PhotoView 需要添加 maven { url "https://www.jitpack.io" }
+    api rootProject.ext.dependencies["photoview"]
+    //二维码zxingLibrary
+    api rootProject.ext.dependencies["zxing"]
+    //JZVideo视频
+    api rootProject.ext.dependencies["videoplayer"]
+    //LeakCanary
+    //"leakcanary"      : 'com.squareup.leakcanary:leakcanary-android:2.8.1'
+    //debugImplementation rootProject.ext.dependencies["leakcanary"]
+    //
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    //Voice
+    //api files('libs/Msc.jar')
 }

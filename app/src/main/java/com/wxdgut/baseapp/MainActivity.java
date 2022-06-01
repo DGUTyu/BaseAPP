@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.example.framework.BuildConfig;
 import com.wxdgut.baseapp.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        if(BuildConfig.LOG_DEBUG)
+        if(BuildConfig.LOG_DEBUG) //改为的framework的BuildConfig
             Toast.makeText(this,"debug",Toast.LENGTH_LONG).show();
         else Toast.makeText(this,"release",Toast.LENGTH_LONG).show();
     }
