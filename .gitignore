@@ -9,3 +9,5 @@
 .cxx
 /app/src/androidTest/
 /app/src/test/
+/framework/src/androidTest/
+/framework/src/test/
