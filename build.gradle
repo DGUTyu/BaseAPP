@@ -1,4 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+//引入自定义Gradle配置文件 双引号
+apply from: "config.gradle"
+
 buildscript {
     repositories {
         google()
@@ -16,6 +20,8 @@ allprojects {
     repositories {
         google()
         jcenter()
+        //PhotoView maven { url "https://www.jitpack.io" }
+        maven { url rootProject.ext.maven["jitpack"] }
     }
 }
 
