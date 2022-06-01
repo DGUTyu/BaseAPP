@@ -47,7 +47,17 @@ android {
 
     //打包配置
     buildTypes {
+        debug {
+            //自定义Gradle常量
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            buildConfigField "String", "LOG_TAG", "\"BaseAPP\""
+            buildConfigField "String", "SP_NAME", "\"Config\""
+        }
         release {
+            //好处：可以区分debug和release
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            buildConfigField "String", "LOG_TAG", "\"BaseAPP\""
+            buildConfigField "String", "SP_NAME", "\"Config\""
             //shrinkResources为删除无用资源，minifyEnabled为混淆，删除无用代码，但两者是要配合起来用的
             //只有当两者都为true的时候才会起到真正的删除无效代码和无引用资源的目的
             //清理无用资源
